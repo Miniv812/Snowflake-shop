@@ -4,8 +4,8 @@ from typing import List
 class OrderItemSchema(BaseModel):
     product_id: int
     quantity: int
-    selected_size: string
-    selected_color: string
+    selected_size: any
+    selected_color: any
 
 class OrderCreateSchema(BaseModel):
     delivery_address: str

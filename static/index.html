@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Інтернет-магазин «Сніжинка»</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h1>❄️ Магазин теплого одягу «Сніжинка»</h1>
+        <div class="header-right">
+            <div id="user-block">
+                <button class="btn-auth" onclick="showAuthModal()">🔑 Увійти / Реєстрація</button>
+            </div>
+            <div id="cart-status">🛒 Кошик: <span id="cart-count">0</span> товарів</div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Спеціальний блок Панелі Адміністратора (видимий тільки Admin) -->
+        <section id="admin-panel" class="admin-section" style="display: none;">
+            <h2>🛠️ Панель Адміністратора: Додати новий товар у каталог</h2>
+            <form onsubmit="createProduct(event)">
+                <div class="form-row">
+                    <input type="text" id="p-name" placeholder="Назва товару (напр. Зимова куртка)" required>
+                    <input type="number" id="p-price" placeholder="Ціна (грн)" step="0.01" required>
+                </div>
+                <div class="form-row">
+                    <input type="text" id="p-material" placeholder="Матеріал (напр. Вовна 100%)" required>
+                    <input type="number" id="p-temp" placeholder="Мін. температура (напр. -25)" required>
+                </div>
+                <div class="form-row">
+                    <input type="text" id="p-size" placeholder="Розмірна сітка (напр. S, M, L)" required>
+                    <input type="number" id="p-stock" placeholder="Кількість на складі" required>
+                </div>
+                <textarea id="p-desc" placeholder="Опис товару" rows="3" required></textarea>
+                <button type="submit" class="btn-admin-add">➕ Додати товар у докер-базу</button>
+            </form>
+        </section>
+
+        <section class="filter-section">
+            <label for="temp-filter">Температурний режим (до):</label>
+            <select id="temp-filter" onchange="loadProducts()">
+                <option value="">Всі товари</option>
+                <option value="-15">до -15°C</option>
+                <option value="-25">до -25°C і холодніше</option>
+            </select>
+        </section>
+
+        <section id="products-grid" class="products-grid">
+            <!-- Товари -->
+        </section>
+
+        <section class="checkout-section">
+            <h2>Оформлення замовлення</h2>
+            <form id="order-form" onsubmit="submitOrder(event)">
+                <input type="email" id="email" placeholder="Ваш Email" required>
+                <input type="text" id="address" placeholder="Адреса доставки / Нова Пошта" required>
+                <button type="submit">Оформити замовлення</button>
+            </form>
+            <div id="order-message"></div>
+        </section>
+    </main>
+
+    <!-- Модальне вікно Авторизації / Реєстрації -->
+    <div id="auth-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="hideAuthModal()">&times;</span>
+            <div class="tab-buttons">
+                <button class="tab-btn active" id="tab-login-btn" onclick="switchTab('login')">Вхід</button>
+                <button class="tab-btn" id="tab-reg-btn" onclick="switchTab('register')">Реєстрація</button>
+            </div>
+
+            <!-- Форма Входу -->
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <h3>Авторизація</h3>
+                <input type="email" id="login-email" placeholder="Email (напр. admin@snizhinka.ua)" required>
+                <input type="password" id="login-pass" placeholder="Пароль (напр. admin123)" required>
+                <button type="submit">Увійти</button>
+            </form>
+
+            <!-- Форма Реєстрації -->
+            <form id="register-form" onsubmit="handleRegister(event)" style="display: none;">
+                <h3>Створити акаунт</h3>
+                <input type="text" id="reg-name" placeholder="ПІБ" required>
+                <input type="email" id="reg-email" placeholder="Email" required>
+                <input type="password" id="reg-pass" placeholder="Пароль" required>
+                <button type="submit">Зареєструватися</button>
+            </form>
+
+            <div id="auth-error" style="color: red; margin-top: 10px;"></div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
