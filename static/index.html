@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!--<!DOCTYPE html>
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
@@ -19,7 +19,7 @@
 
     <main>
         <!-- Спеціальний блок Панелі Адміністратора (видимий тільки Admin) -->
-        <section id="admin-panel" class="admin-section" style="display: none;">
+        <!--<section id="admin-panel" class="admin-section" style="display: none;">
             <h2>🛠️ Панель Адміністратора: Додати новий товар у каталог</h2>
             <form onsubmit="createProduct(event)">
                 <div class="form-row">
@@ -52,7 +52,7 @@
             <!-- Товари -->
         </section>
 
-        <section class="checkout-section">
+        <!--<section class="checkout-section">
             <h2>Оформлення замовлення</h2>
             <form id="order-form" onsubmit="submitOrder(event)">
                 <input type="email" id="email" placeholder="Ваш Email" required>
@@ -64,7 +64,7 @@
     </main>
 
     <!-- Модальне вікно Авторизації / Реєстрації -->
-    <div id="auth-modal" class="modal">
+    <!--<div id="auth-modal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="hideAuthModal()">&times;</span>
             <div class="tab-buttons">
@@ -73,7 +73,7 @@
             </div>
 
             <!-- Форма Входу -->
-            <form id="login-form" onsubmit="handleLogin(event)">
+            <!--<form id="login-form" onsubmit="handleLogin(event)">
                 <h3>Авторизація</h3>
                 <input type="email" id="login-email" placeholder="Email (напр. admin@snizhinka.ua)" required>
                 <input type="password" id="login-pass" placeholder="Пароль (напр. admin123)" required>
@@ -81,6 +81,152 @@
             </form>
 
             <!-- Форма Реєстрації -->
+            <!--<form id="register-form" onsubmit="handleRegister(event)" style="display: none;">
+                <h3>Створити акаунт</h3>
+                <input type="text" id="reg-name" placeholder="ПІБ" required>
+                <input type="email" id="reg-email" placeholder="Email" required>
+                <input type="password" id="reg-pass" placeholder="Пароль" required>
+                <button type="submit">Зареєструватися</button>
+            </form>
+
+            <div id="auth-error" style="color: red; margin-top: 10px;"></div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Інтернет-магазин «Сніжинка»</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h1>❄️ Магазин теплого одягу «Сніжинка»</h1>
+        <div class="header-right">
+            <div id="user-block">
+                <button class="btn-auth" onclick="showAuthModal()">🔑 Увійти / Реєстрація</button>
+            </div>
+            <!-- Інтерактивна кнопка кошика -->
+            <button id="cart-btn" class="btn-cart" onclick="openCartModal()" style="display: none;">
+                🛒 Кошик: <span id="cart-count">0</span> товарів
+            </button>
+        </div>
+    </header>
+
+    <div class="layout-container">
+        <!-- Ліва бокова панель фільтрації -->
+        <aside class="sidebar-filters">
+            <h3>🔍 Фільтри товарів</h3>
+            
+            <div class="filter-group">
+                <label for="search-input">Пошук за назвою:</label>
+                <input type="text" id="search-input" placeholder="Наприклад: Пуховик..." oninput="loadProducts()">
+            </div>
+
+            <div class="filter-group">
+                <label>Температурний режим (°C):</label>
+                <div class="temp-boxes">
+                    <div class="temp-box">
+                        <span>Від</span>
+                        <strong id="temp-from-label">-5°C</strong>
+                    </div>
+                    <span class="temp-dash">-</span>
+                    <div class="temp-box">
+                        <span>До</span>
+                        <strong id="temp-to-label">-40°C</strong>
+                    </div>
+                </div>
+                <div class="range-slider-container">
+                    <div class="slider-track" id="temp-slider-track"></div>
+                    <input type="range" id="temp-range-min" min="5" max="40" value="5" oninput="handleTempSlider()">
+                    <input type="range" id="temp-range-max" min="5" max="40" value="40" oninput="handleTempSlider()">
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label for="material-input">Матеріал:</label>
+                <input type="text" id="material-input" placeholder="Наприклад: Пух, Вовна..." oninput="loadProducts()">
+            </div>
+
+            <div class="filter-group">
+                <label for="color-input">Колір:</label>
+                <input type="text" id="color-input" placeholder="Наприклад: Чорний, Синій..." oninput="loadProducts()">
+            </div>
+
+            <div class="filter-group">
+                <label for="size-input">Розмір (S, M, L, XL...):</label>
+                <input type="text" id="size-input" placeholder="Наприклад: M, L..." oninput="loadProducts()">
+            </div>
+
+            <div class="filter-group">
+                <label>Ціна (грн):</label>
+                <div class="price-range">
+                    <input type="number" id="min-price" placeholder="Мін" oninput="loadProducts()">
+                    <input type="number" id="max-price" placeholder="Макс" oninput="loadProducts()">
+                </div>
+            </div>
+
+            <button class="btn-reset-filters" onclick="resetFilters()">Очистити фільтри</button>
+        </aside>
+
+        <!-- Основна робоча область -->
+        <main class="content-area">
+            <!-- Панель Адміністратора -->
+            <section id="admin-panel" class="admin-section" style="display: none;">
+                <h2>🛠️ Панель Адміністратора: Додати новий товар</h2>
+                <form onsubmit="createProduct(event)">
+                    <div class="form-row">
+                        <input type="text" id="p-name" placeholder="Назва товару" required>
+                        <input type="number" id="p-price" placeholder="Ціна (грн)" step="0.01" required>
+                    </div>
+                    <div class="form-row">
+                        <input type="text" id="p-material" placeholder="Матеріал" required>
+                        <input type="text" id="p-color" placeholder="Колір" required>
+                        <input type="number" id="p-temp" placeholder="Мін. температура" required>
+                    </div>
+                    <div class="form-row">
+                        <input type="text" id="p-size" placeholder="Розмірна сітка" required>
+                        <input type="number" id="p-stock" placeholder="Кількість на складі" required>
+                    </div>
+                    <div class="form-row" style="align-items: center;">
+                        <label for="p-image" style="font-size: 0.9em; font-weight: bold;">📷 Фото товару:</label>
+                        <input type="file" id="p-image" accept="image/*" style="background: white; padding: 6px; border-radius: 5px; border: 1px solid #ccc;">
+                    </div>
+                    <textarea id="p-desc" placeholder="Опис товару" rows="2" required></textarea>
+                    <button type="submit" class="btn-admin-add">+ Додати товар у базу</button>
+                </form>
+            </section>
+
+            <!-- Сітка товарів -->
+            <section id="products-grid" class="products-grid">
+                <!-- Картки завантажуються через JS -->
+            </section>
+        </main>
+    </div>
+
+    <!-- Модальне вікно авторизації -->
+    <div id="auth-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="hideAuthModal()">&times;</span>
+            <div class="tab-buttons">
+                <button class="tab-btn active" id="tab-login-btn" onclick="switchTab('login')">Вхід</button>
+                <button class="tab-btn" id="tab-reg-btn" onclick="switchTab('register')">Реєстрація</button>
+            </div>
+
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <h3>Авторизація</h3>
+                <input type="email" id="login-email" placeholder="Email" required>
+                <input type="password" id="login-pass" placeholder="Пароль" required>
+                <button type="submit">Увійти</button>
+            </form>
+
             <form id="register-form" onsubmit="handleRegister(event)" style="display: none;">
                 <h3>Створити акаунт</h3>
                 <input type="text" id="reg-name" placeholder="ПІБ" required>
@@ -90,6 +236,103 @@
             </form>
 
             <div id="auth-error" style="color: red; margin-top: 10px;"></div>
+        </div>
+    </div>
+
+    <!-- Модальне вікно Кошика та Оформлення замовлення -->
+    <div id="cart-modal" class="modal">
+        <div class="modal-content cart-modal-content">
+            <span class="close-btn" onclick="closeCartModal()">&times;</span>
+            <h2>🛒 Ваш Кошик</h2>
+            
+            <div id="cart-items-container">
+                <!-- Список товарів у кошику -->
+            </div>
+
+            <div class="cart-total-bar">
+                Загальна сума: <strong id="cart-total-price">0</strong> грн
+            </div>
+
+            <hr style="margin: 20px 0;">
+
+            <h3>🚚 Оформлення замовлення</h3>
+            <form id="order-form" onsubmit="submitOrder(event)">
+                <div class="customer-info-cards">
+                    <div class="user-info-badge">
+                        <span class="info-label">👤 Ім'я покупця:</span>
+                        <strong id="checkout-user-name"></strong>
+                    </div>
+                    <div class="user-info-badge">
+                        <span class="info-label">✉️ Email:</span>
+                        <strong id="checkout-user-email"></strong>
+                    </div>
+                </div>
+                <div class="phone-input-wrapper">
+                    <span class="phone-prefix">+380</span>
+                    <input type="text" id="phone-1" class="phone-part phone-part-2" maxlength="2" inputmode="numeric" placeholder="00" required>
+                    <input type="text" id="phone-2" class="phone-part phone-part-3" maxlength="3" inputmode="numeric" placeholder="000" required>
+                    <input type="text" id="phone-3" class="phone-part phone-part-2" maxlength="2" inputmode="numeric" placeholder="00" required>
+                    <input type="text" id="phone-4" class="phone-part phone-part-2" maxlength="2" inputmode="numeric" placeholder="00" required>
+                </div>
+                <input type="text" id="address" placeholder="Адреса доставки / Номер відділення пошти" required>
+                <button type="submit" class="btn-submit-order">Підтвердити замовлення</button>
+            </form>
+            <div id="order-message" style="margin-top: 10px;"></div>
+        </div>
+    </div>
+
+    <!-- Модальне вікно редагування товару (для Адміністратора) -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content edit-modal-content">
+            <span class="close-btn" onclick="closeEditModal()">&times;</span>
+            <h2>✏️ Редагування товару</h2>
+            <form id="edit-product-form" onsubmit="updateProduct(event)">
+                <input type="hidden" id="edit-p-id">
+            
+                <label style="font-size: 0.85em; font-weight: bold;">Назва товару:</label>
+                <input type="text" id="edit-p-name" required>
+
+                <div class="form-row">
+                    <div style="flex: 1;">
+                        <label style="font-size: 0.85em; font-weight: bold;">Ціна (грн):</label>
+                        <input type="number" id="edit-p-price" step="0.01" required>
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="font-size: 0.85em; font-weight: bold;">Кількість на складі:</label>
+                        <input type="number" id="edit-p-stock" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div style="flex: 1;">
+                        <label style="font-size: 0.85em; font-weight: bold;">Матеріал:</label>
+                        <input type="text" id="edit-p-material" required>
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="font-size: 0.85em; font-weight: bold;">Кольори:</label>
+                        <input type="text" id="edit-p-color" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div style="flex: 1;">
+                        <label style="font-size: 0.85em; font-weight: bold;">Мін. температура (°C):</label>
+                        <input type="number" id="edit-p-temp" required>
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="font-size: 0.85em; font-weight: bold;">Розмірна сітка:</label>
+                        <input type="text" id="edit-p-size" required>
+                    </div>
+                </div>
+
+                <label style="font-size: 0.85em; font-weight: bold;">Опис товару:</label>
+                <textarea id="edit-p-desc" rows="2" required></textarea>
+
+                <label style="font-size: 0.85em; font-weight: bold;"> Замінити фото (залиште порожнім, щоб зберегти поточне):</label>
+                <input type="file" id="edit-p-image" accept="image/*">
+
+                <button type="submit"> Зберегти зміни</button>
+            </form>
         </div>
     </div>
 

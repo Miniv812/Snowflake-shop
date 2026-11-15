@@ -9,37 +9,113 @@ body {
 header {
     background: linear-gradient(135deg, #1e5799, #2989d8);
     color: white;
-    padding: 20px 40px;
+    padding: 15px 30px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
-main {
-    max-width: 1000px;
-    margin: 30px auto;
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.btn-cart {
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.95em;
+    transition: background 0.2s;
+}
+
+.btn-cart:hover {
+    background-color: #219150;
+}
+
+.btn-auth {
+    background-color: #f39c12;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* Двоколоночна макетна сітка */
+.layout-container {
+    display: flex;
+    max-width: 1400px;
+    margin: 25px auto;
     padding: 0 20px;
+    gap: 25px;
 }
 
-.filter-section {
-    margin-bottom: 25px;
+.sidebar-filters {
+    width: 260px;
+    flex-shrink: 0;
     background: white;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    height: fit-content;
 }
 
+.filter-group {
+    margin-bottom: 18px;
+}
+
+.filter-group label {
+    display: block;
+    font-size: 0.9em;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+.filter-group input, .filter-group select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.price-range {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-reset-filters {
+    width: 100%;
+    background-color: #7f8c8d;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.content-area {
+    flex-grow: 1;
+}
+
+/* Розширена сітка карток */
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
     gap: 20px;
 }
 
 .product-card {
     background: white;
     border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+    padding: 18px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.06);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -48,96 +124,67 @@ main {
 .badge {
     background-color: #0088cc;
     color: white;
-    padding: 4px 8px;
+    padding: 3px 8px;
     border-radius: 4px;
-    font-size: 0.85em;
-    width: fit-content;
+    font-size: 0.8em;
 }
 
-button {
-    background-color: #27ae60;
+.product-card h3 {
+    margin: 10px 0 5px 0;
+    font-size: 1.1em;
+}
+
+.product-card button {
+    background-color: #2989d8;
     color: white;
     border: none;
-    padding: 10px 15px;
+    padding: 8px;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 1em;
     margin-top: 10px;
 }
 
-button:hover {
-    background-color: #219150;
+/* Стилі кошика */
+.cart-modal-content {
+    width: 500px;
+    max-height: 85vh;
+    overflow-y: auto;
 }
 
-.checkout-section {
-    margin-top: 40px;
-    background: white;
-    padding: 25px;
-    border-radius: 10px;
-}
-
-form input {
-    display: block;
-    width: 100%;
-    margin-bottom: 12px;
-    padding: 10px;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-.header-right {
+.cart-item-row {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 20px;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
 }
 
-.btn-auth {
-    background-color: #f39c12;
-    margin: 0;
+.cart-qty-btn {
+    background: #e0e0e0;
+    border: none;
+    width: 26px; height: 26px;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
-.btn-auth:hover {
-    background-color: #d35400;
+.cart-total-bar {
+    font-size: 1.2em;
+    text-align: right;
+    margin-top: 15px;
 }
 
-.admin-section {
-    background: #eef9ff;
-    border: 2px dashed #0088cc;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 25px;
-}
-
-.form-row {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 10px;
-}
-
-.form-row input {
-    flex: 1;
-    margin: 0;
-}
-
-textarea {
+.btn-submit-order {
     width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    box-sizing: border-box;
+    background-color: #27ae60;
+    color: white;
+    padding: 12px;
+    font-weight: bold;
+    border: none;
     border-radius: 5px;
-    border: 1px solid #ccc;
+    cursor: pointer;
 }
 
-.btn-admin-add {
-    background-color: #8e44ad;
-}
-
-.btn-admin-add:hover {
-    background-color: #7d3c98;
-}
-
-/* Modal styles */
+/* Модальні вікна */
 .modal {
     display: none;
     position: fixed;
@@ -145,37 +192,379 @@ textarea {
     background: rgba(0,0,0,0.5);
     justify-content: center;
     align-items: center;
+    z-index: 1000;
 }
 
 .modal-content {
     background: white;
     padding: 30px;
-    border-radius: 10px;
-    width: 350px;
+    border-radius: 12px;
+    width: 380px;
+    max-width: 90%;
     position: relative;
-}
-
-.close-btn {
-    position: absolute;
-    right: 15px; top: 10px;
-    font-size: 24px;
-    cursor: pointer;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
 }
 
 .tab-buttons {
     display: flex;
-    margin-bottom: 15px;
+    gap: 5px;
+    margin-bottom: 20px;
 }
 
 .tab-btn {
     flex: 1;
-    background: #eee;
-    color: #333;
-    margin: 0;
-    border-radius: 0;
+    background: #eef4f8;
+    color: #555;
+    border: none;
+    padding: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background 0.2s, color 0.2s;
 }
 
 .tab-btn.active {
     background: #2989d8;
     color: white;
+}
+
+
+/* Примусове відображення полів вводу стовпчиком */
+.modal-content form input {
+    display: block !important;
+    width: 100% !important;
+    margin-bottom: 12px !important;
+    padding: 10px 12px !important;
+    box-sizing: border-box !important;
+    border: 1px solid #ccc !important;
+    border-radius: 6px !important;
+    font-size: 0.95em !important;
+}
+
+/* Стиль головної кнопки Входу / Реєстрації */
+.modal-content form button[type="submit"] {
+    display: block !important;
+    width: 100% !important;
+    background-color: #2989d8 !important;
+    color: white !important;
+    border: none !important;
+    padding: 11px !important;
+    border-radius: 6px !important;
+    font-size: 1em !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    margin-top: 10px !important;
+}
+
+.modal-content form button[type="submit"]:hover {
+    background-color: #1e5799 !important;
+}
+
+.close-btn {
+    position: absolute;
+    right: 15px;
+    top: 12px;
+    font-size: 24px;
+    color: #888;
+    cursor: pointer;
+}
+
+.close-btn:hover {
+    color: #333;
+}
+
+.admin-section {
+    background: #eef9ff;
+    border: 2px dashed #0088cc;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.form-row {
+    display: flex; gap: 10px; margin-bottom: 8px;
+}
+
+.form-row input { flex: 1; padding: 8px; }
+
+.user-email-badge {
+    background-color: #eef9ff;
+    border: 1px solid #2989d8;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 0.95em;
+    color: #1e5799;
+    margin-bottom: 12px;
+}
+
+
+/* Кнопка недоступного товару (0 шт. на складі) */
+.btn-disabled {
+    background-color: #bdc3c7 !important;
+    color: #7f8c8d !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+}
+
+/* Напівпрозора картка для відсутнього товару */
+.out-of-stock-card {
+    opacity: 0.85;
+    border: 1px solid #e0e0e0;
+}
+
+/* Кнопка видалення товару для Адміністратора */
+.btn-delete {
+    background-color: #e74c3c !important;
+    color: white !important;
+    border: none !important;
+    padding: 7px 10px !important;
+    border-radius: 5px !important;
+    cursor: pointer !important;
+    margin-top: 8px !important;
+    font-size: 0.85em !important;
+    width: 100% !important;
+    transition: background 0.2s;
+}
+
+.btn-delete:hover {
+    background-color: #c0392b !important;
+}
+
+
+/* --- Подвійний повзунок температури --- */
+.temp-boxes {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.temp-box {
+    flex: 1;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    padding: 6px 10px;
+    background: #fff;
+}
+
+.temp-box span {
+    display: block;
+    font-size: 0.75em;
+    color: #888;
+}
+
+.temp-box strong {
+    font-size: 1em;
+    color: #222;
+}
+
+.temp-dash {
+    color: #999;
+    font-weight: bold;
+}
+
+.range-slider-container {
+    position: relative;
+    width: 100%;
+    height: 24px;
+    display: flex;
+    align-items: center;
+}
+
+.slider-track {
+    position: absolute;
+    width: 100%;
+    height: 5px;
+    background: #e0e0e0;
+    border-radius: 5px;
+    z-index: 1;
+}
+
+.range-slider-container input[type="range"] {
+    position: absolute;
+    width: 100%;
+    pointer-events: none;
+    -webkit-appearance: none;
+    appearance: none;
+    background: none;
+    z-index: 2;
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+.range-slider-container input[type="range"]::-webkit-slider-thumb {
+    pointer-events: auto;
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2.5px solid #27ae60;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+
+.range-slider-container input[type="range"]::-moz-range-thumb {
+    pointer-events: auto;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2.5px solid #27ae60;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+
+/* --- Зображення та заглушка в картці товару --- */
+.product-img-wrapper {
+    width: 100%;
+    height: 170px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    background-color: #eef4f8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-img-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #7f9eb2;
+    font-size: 0.85em;
+    text-align: center;
+    gap: 6px;
+}
+
+.product-img-placeholder span {
+    font-size: 2.2em;
+}
+
+
+
+
+/* Кнопка редагування товару для Адміністратора */
+.btn-edit {
+    background-color: #f39c12 !important;
+    color: white !important;
+    border: none !important;
+    padding: 7px 10px !important;
+    border-radius: 5px !important;
+    cursor: pointer !important;
+    margin-top: 8px !important;
+    font-size: 0.85em !important;
+    width: 100% !important;
+    transition: background 0.2s;
+}
+
+.btn-edit:hover {
+    background-color: #d68910 !important;
+}
+
+.edit-modal-content {
+    width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.admin-section textarea, .edit-modal-content textarea {
+    width: 100%;
+    padding: 8px 10px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-family: inherit;
+}
+
+.btn-admin-add {
+    background-color: #8e44ad;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-admin-add:hover {
+    background-color: #732d91;
+}
+
+
+
+/* --- Блок введення телефону з 4 окремих полів --- */
+.phone-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+.phone-prefix {
+    background-color: #eef4f8;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-weight: bold;
+    color: #1e5799;
+    font-size: 0.95em;
+    user-select: none;
+}
+
+.modal-content form input.phone-part {
+    display: inline-block !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    margin-bottom: 0 !important;
+    padding: 10px 4px !important;
+    text-align: center !important;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.phone-part-2 {
+    flex: 2;
+}
+
+.phone-part-3 {
+    flex: 3;
+}
+
+/* --- Окремі картки імені та пошти покупця у кошику --- */
+.customer-info-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.user-info-badge {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #eef9ff;
+    border: 1px solid #2989d8;
+    padding: 9px 12px;
+    border-radius: 6px;
+    font-size: 0.95em;
+    color: #1e5799;
+}
+
+.user-info-badge .info-label {
+    color: #4a6b82;
+    font-size: 0.9em;
 }

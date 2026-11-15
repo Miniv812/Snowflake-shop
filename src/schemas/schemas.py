@@ -7,9 +7,11 @@ class ProductSchema(BaseModel):
     description: Optional[str]
     price: float
     material: str
+    color: str
     temp_min: int
     size_grid: str
     stock_quantity: int
+    image_url: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -19,17 +21,20 @@ class ProductCreate(BaseModel):
     description: str
     price: float
     material: str
+    color: str
     temp_min: int
     size_grid: str
     stock_quantity: int
+    image_url: Optional[str] = None
 
 class OrderItemCreate(BaseModel):
     product_id: int
-    quantity: int
     selected_size: str
+    selected_color: str
 
 class OrderCreate(BaseModel):
     user_email: str
+    phone: str
     delivery_address: str
     items: List[OrderItemCreate]
 

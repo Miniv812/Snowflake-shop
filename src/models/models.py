@@ -1,4 +1,3 @@
-
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from datetime import datetime
@@ -33,9 +32,11 @@ class ProductModel(Base):
     description = Column(String)
     price = Column(Float, nullable=False)
     material = Column(String)          # "Вовна 100%", "Пух 90%"
+    color = Column(String, default="Чорний")
     temp_min = Column(Integer)         # Рекомендована мінімальна температура (напр. -25)
     size_grid = Column(String)        # "S, M, L, XL"
     stock_quantity = Column(Integer, default=10)
+    image_url = Column(String, nullable=True)
 
     category = relationship("CategoryModel", back_populates="products")
 
@@ -46,6 +47,7 @@ class OrderModel(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
     created_at = Column(DateTime, default=datetime.utcnow)
     status = Column(String, default="Обробляється")
+    phone = Column(String, nullable=False)
     delivery_address = Column(String, nullable=False)
     total_amount = Column(Float, nullable=False)
 
@@ -58,9 +60,10 @@ class OrderItemModel(Base):
     id = Column(Integer, primary_key=True, index=True)
     order_id = Column(Integer, ForeignKey("orders.id"))
     product_id = Column(Integer, ForeignKey("products.id"))
-    quantity = Column(Integer, nullable=False)
+    quantity = Column(Integer, default=1)
     price_per_unit = Column(Float, nullable=False)
     selected_size = Column(String, nullable=False)
+    selected_color = Column(String, nullable=False)
 
     order = relationship("OrderModel", back_populates="items")
     product = relationship("ProductModel")
