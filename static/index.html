@@ -1,119 +1,31 @@
-<!--<!DOCTYPE html>
-<html lang="uk">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Інтернет-магазин «Сніжинка»</title>
-    <link rel="stylesheet" href="/static/style.css">
-</head>
-<body>
-    <header>
-        <h1>❄️ Магазин теплого одягу «Сніжинка»</h1>
-        <div class="header-right">
-            <div id="user-block">
-                <button class="btn-auth" onclick="showAuthModal()">🔑 Увійти / Реєстрація</button>
-            </div>
-            <div id="cart-status">🛒 Кошик: <span id="cart-count">0</span> товарів</div>
-        </div>
-    </header>
-
-    <main>
-        <!-- Спеціальний блок Панелі Адміністратора (видимий тільки Admin) -->
-        <!--<section id="admin-panel" class="admin-section" style="display: none;">
-            <h2>🛠️ Панель Адміністратора: Додати новий товар у каталог</h2>
-            <form onsubmit="createProduct(event)">
-                <div class="form-row">
-                    <input type="text" id="p-name" placeholder="Назва товару (напр. Зимова куртка)" required>
-                    <input type="number" id="p-price" placeholder="Ціна (грн)" step="0.01" required>
-                </div>
-                <div class="form-row">
-                    <input type="text" id="p-material" placeholder="Матеріал (напр. Вовна 100%)" required>
-                    <input type="number" id="p-temp" placeholder="Мін. температура (напр. -25)" required>
-                </div>
-                <div class="form-row">
-                    <input type="text" id="p-size" placeholder="Розмірна сітка (напр. S, M, L)" required>
-                    <input type="number" id="p-stock" placeholder="Кількість на складі" required>
-                </div>
-                <textarea id="p-desc" placeholder="Опис товару" rows="3" required></textarea>
-                <button type="submit" class="btn-admin-add">➕ Додати товар у докер-базу</button>
-            </form>
-        </section>
-
-        <section class="filter-section">
-            <label for="temp-filter">Температурний режим (до):</label>
-            <select id="temp-filter" onchange="loadProducts()">
-                <option value="">Всі товари</option>
-                <option value="-15">до -15°C</option>
-                <option value="-25">до -25°C і холодніше</option>
-            </select>
-        </section>
-
-        <section id="products-grid" class="products-grid">
-            <!-- Товари -->
-        </section>
-
-        <!--<section class="checkout-section">
-            <h2>Оформлення замовлення</h2>
-            <form id="order-form" onsubmit="submitOrder(event)">
-                <input type="email" id="email" placeholder="Ваш Email" required>
-                <input type="text" id="address" placeholder="Адреса доставки / Нова Пошта" required>
-                <button type="submit">Оформити замовлення</button>
-            </form>
-            <div id="order-message"></div>
-        </section>
-    </main>
-
-    <!-- Модальне вікно Авторизації / Реєстрації -->
-    <!--<div id="auth-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="hideAuthModal()">&times;</span>
-            <div class="tab-buttons">
-                <button class="tab-btn active" id="tab-login-btn" onclick="switchTab('login')">Вхід</button>
-                <button class="tab-btn" id="tab-reg-btn" onclick="switchTab('register')">Реєстрація</button>
-            </div>
-
-            <!-- Форма Входу -->
-            <!--<form id="login-form" onsubmit="handleLogin(event)">
-                <h3>Авторизація</h3>
-                <input type="email" id="login-email" placeholder="Email (напр. admin@snizhinka.ua)" required>
-                <input type="password" id="login-pass" placeholder="Пароль (напр. admin123)" required>
-                <button type="submit">Увійти</button>
-            </form>
-
-            <!-- Форма Реєстрації -->
-            <!--<form id="register-form" onsubmit="handleRegister(event)" style="display: none;">
-                <h3>Створити акаунт</h3>
-                <input type="text" id="reg-name" placeholder="ПІБ" required>
-                <input type="email" id="reg-email" placeholder="Email" required>
-                <input type="password" id="reg-pass" placeholder="Пароль" required>
-                <button type="submit">Зареєструватися</button>
-            </form>
-
-            <div id="auth-error" style="color: red; margin-top: 10px;"></div>
-        </div>
-    </div>
-
-    <script src="/static/app.js"></script>
-</body>
-</html> -->
-
-
+<!--
+  Головна HTML-сторінка клієнтської частини інтернет-магазину «Сніжинка».
+  Визначає структуру інтерфейсу: шапку сайту, бокову панель фільтрів із категоріями,
+  каталог товарів, панель адміністратора та модальні вікна (авторизація, кошик,
+  редагування товарів, історія замовлень покупця та керування замовленнями).
+-->
 <!DOCTYPE html>
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Інтернет-магазин «Сніжинка»</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/style.css?v=3">
 </head>
 <body>
+    <!-- Верхня навігаційна панель із кнопками входу, замовлень та кошика -->
     <header>
         <h1>❄️ Магазин теплого одягу «Сніжинка»</h1>
         <div class="header-right">
             <div id="user-block">
                 <button class="btn-auth" onclick="showAuthModal()">🔑 Увійти / Реєстрація</button>
             </div>
-            <!-- Інтерактивна кнопка кошика -->
+            <button id="my-orders-btn" class="btn-orders" onclick="openMyOrdersModal()" style="display: none;">
+                📦 Мої замовлення (<span id="my-orders-count">0</span>)
+            </button>
+            <button id="admin-orders-btn" class="btn-admin-orders" onclick="openAdminOrdersModal()" style="display: none;">
+                📋 Замовлення клієнтів (<span id="admin-orders-count">0</span>)
+            </button>
             <button id="cart-btn" class="btn-cart" onclick="openCartModal()" style="display: none;">
                 🛒 Кошик: <span id="cart-count">0</span> товарів
             </button>
@@ -124,7 +36,14 @@
         <!-- Ліва бокова панель фільтрації -->
         <aside class="sidebar-filters">
             <h3>🔍 Фільтри товарів</h3>
-            
+
+            <div class="filter-group">
+                <label for="category-filter">Категорія:</label>
+                <select id="category-filter" onchange="loadProducts()">
+                    <option value="">Усі категорії</option>
+                </select>
+            </div>
+
             <div class="filter-group">
                 <label for="search-input">Пошук за назвою:</label>
                 <input type="text" id="search-input" placeholder="Наприклад: Пуховик..." oninput="loadProducts()">
@@ -161,7 +80,7 @@
             </div>
 
             <div class="filter-group">
-                <label for="size-input">Розмір (S, M, L, XL...):</label>
+                <label for="size-input">Розмір:</label>
                 <input type="text" id="size-input" placeholder="Наприклад: M, L..." oninput="loadProducts()">
             </div>
 
@@ -176,7 +95,7 @@
             <button class="btn-reset-filters" onclick="resetFilters()">Очистити фільтри</button>
         </aside>
 
-        <!-- Основна робоча область -->
+        <!-- Основна область контенту: адмін-панель та сітка товарів -->
         <main class="content-area">
             <!-- Панель Адміністратора -->
             <section id="admin-panel" class="admin-section" style="display: none;">
@@ -184,6 +103,9 @@
                 <form onsubmit="createProduct(event)">
                     <div class="form-row">
                         <input type="text" id="p-name" placeholder="Назва товару" required>
+                        <select id="p-category" required style="flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 5px; background: white;">
+                            <option value="" disabled selected>Оберіть категорію...</option>
+                        </select>
                         <input type="number" id="p-price" placeholder="Ціна (грн)" step="0.01" required>
                     </div>
                     <div class="form-row">
@@ -204,14 +126,12 @@
                 </form>
             </section>
 
-            <!-- Сітка товарів -->
-            <section id="products-grid" class="products-grid">
-                <!-- Картки завантажуються через JS -->
-            </section>
+            <!-- Контейнер карток каталогу -->
+            <section id="products-grid" class="products-grid"></section>
         </main>
     </div>
 
-    <!-- Модальне вікно авторизації -->
+    <!-- Модальне вікно входу та реєстрації -->
     <div id="auth-modal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="hideAuthModal()">&times;</span>
@@ -229,7 +149,8 @@
 
             <form id="register-form" onsubmit="handleRegister(event)" style="display: none;">
                 <h3>Створити акаунт</h3>
-                <input type="text" id="reg-name" placeholder="ПІБ" required>
+                <input type="text" id="reg-first-name" placeholder="Ім'я" required>
+                <input type="text" id="reg-last-name" placeholder="Прізвище" required>
                 <input type="email" id="reg-email" placeholder="Email" required>
                 <input type="password" id="reg-pass" placeholder="Пароль" required>
                 <button type="submit">Зареєструватися</button>
@@ -239,15 +160,13 @@
         </div>
     </div>
 
-    <!-- Модальне вікно Кошика та Оформлення замовлення -->
+    <!-- Модальне вікно кошика та оформлення замовлення -->
     <div id="cart-modal" class="modal">
         <div class="modal-content cart-modal-content">
             <span class="close-btn" onclick="closeCartModal()">&times;</span>
             <h2>🛒 Ваш Кошик</h2>
             
-            <div id="cart-items-container">
-                <!-- Список товарів у кошику -->
-            </div>
+            <div id="cart-items-container"></div>
 
             <div class="cart-total-bar">
                 Загальна сума: <strong id="cart-total-price">0</strong> грн
@@ -281,7 +200,35 @@
         </div>
     </div>
 
-    <!-- Модальне вікно редагування товару (для Адміністратора) -->
+    <!-- Модальне вікно історії замовлень покупця -->
+    <div id="my-orders-modal" class="modal">
+        <div class="modal-content orders-modal-content">
+            <span class="close-btn" onclick="closeMyOrdersModal()">&times;</span>
+            <h2>📦 Історія ваших замовлень</h2>
+            <div id="my-orders-container"></div>
+        </div>
+    </div>
+
+    <!-- Модальне вікно керування замовленнями клієнтів (для Адміністратора) -->
+    <div id="admin-orders-modal" class="modal">
+        <div class="modal-content orders-modal-content">
+            <span class="close-btn" onclick="closeAdminOrdersModal()">&times;</span>
+            <h2>📋 Управління замовленнями клієнтів</h2>
+            <div class="admin-orders-toolbar">
+                <label for="admin-order-status-filter">Фільтр за статусом:</label>
+                <select id="admin-order-status-filter" onchange="renderAdminOrders()">
+                    <option value="">Усі замовлення</option>
+                    <option value="Обробляється">Обробляється</option>
+                    <option value="Відправлено">Відправлено</option>
+                    <option value="Виконано">Виконано</option>
+                    <option value="Скасовано">Скасовано</option>
+                </select>
+            </div>
+            <div id="admin-orders-container"></div>
+        </div>
+    </div>
+
+    <!-- Модальне вікно редагування товару адміністратором -->
     <div id="edit-modal" class="modal">
         <div class="modal-content edit-modal-content">
             <span class="close-btn" onclick="closeEditModal()">&times;</span>
@@ -291,6 +238,9 @@
             
                 <label style="font-size: 0.85em; font-weight: bold;">Назва товару:</label>
                 <input type="text" id="edit-p-name" required>
+
+                <label style="font-size: 0.85em; font-weight: bold;">Категорія:</label>
+                <select id="edit-p-category" required style="display: block; width: 100%; margin-bottom: 12px; padding: 10px 12px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 6px; font-size: 0.95em; background: white;"></select>
 
                 <div class="form-row">
                     <div style="flex: 1;">
@@ -328,14 +278,14 @@
                 <label style="font-size: 0.85em; font-weight: bold;">Опис товару:</label>
                 <textarea id="edit-p-desc" rows="2" required></textarea>
 
-                <label style="font-size: 0.85em; font-weight: bold;"> Замінити фото (залиште порожнім, щоб зберегти поточне):</label>
+                <label style="font-size: 0.85em; font-weight: bold;">📷 Замінити фото (залиште порожнім, щоб зберегти поточне):</label>
                 <input type="file" id="edit-p-image" accept="image/*">
 
-                <button type="submit"> Зберегти зміни</button>
+                <button type="submit">💾 Зберегти зміни</button>
             </form>
         </div>
     </div>
 
-    <script src="/static/app.js"></script>
+    <script src="/static/app.js?v=4"></script>
 </body>
 </html>

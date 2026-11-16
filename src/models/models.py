@@ -1,8 +1,15 @@
+"""
+Модуль ORM-моделей бази даних (Data Models Layer).
+Описує структуру таблиць PostgreSQL (користувачі, категорії, товари, замовлення
+та позиції замовлень) і зв'язки між ними за допомогою SQLAlchemy.
+"""
+
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from src.database import Base
 
+# Модель користувача системи (покупець або адміністратор)
 class UserModel(Base):
     __tablename__ = "users"
 
@@ -14,6 +21,7 @@ class UserModel(Base):
 
     orders = relationship("OrderModel", back_populates="user")
 
+# Модель категорії товарів зимового одягу
 class CategoryModel(Base):
     __tablename__ = "categories"
 
@@ -23,6 +31,7 @@ class CategoryModel(Base):
 
     products = relationship("ProductModel", back_populates="category")
 
+# Модель товару в каталозі магазину
 class ProductModel(Base):
     __tablename__ = "products"
 
@@ -31,15 +40,16 @@ class ProductModel(Base):
     name = Column(String, nullable=False)
     description = Column(String)
     price = Column(Float, nullable=False)
-    material = Column(String)          # "Вовна 100%", "Пух 90%"
+    material = Column(String)
     color = Column(String, default="Чорний")
-    temp_min = Column(Integer)         # Рекомендована мінімальна температура (напр. -25)
-    size_grid = Column(String)        # "S, M, L, XL"
+    temp_min = Column(Integer)
+    size_grid = Column(String)
     stock_quantity = Column(Integer, default=10)
     image_url = Column(String, nullable=True)
 
     category = relationship("CategoryModel", back_populates="products")
 
+# Модель оформленого замовлення
 class OrderModel(Base):
     __tablename__ = "orders"
 
@@ -54,6 +64,7 @@ class OrderModel(Base):
     user = relationship("UserModel", back_populates="orders")
     items = relationship("OrderItemModel", back_populates="order")
 
+# Модель окремої позиції (товару з обраним розміром і кольором) у замовленні
 class OrderItemModel(Base):
     __tablename__ = "order_items"
 

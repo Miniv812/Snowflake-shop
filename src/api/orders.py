@@ -1,131 +1,58 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
-from src.database import get_db
-from src.models.models import OrderModel, OrderItemModel, ProductModel, UserModel
-from src.schemas.schemas import OrderCreate, OrderResponse
-import re
+"""
+HTTP-роутер замовлень (Orders API Controller).
+Відповідає за авторизацію користувачів і маршрутизацію запитів
+до сервісу управління замовленнями OrderService.
+"""
 
+from typing import List
+from fastapi import APIRouter, Depends, status
+from sqlalchemy.orm import Session
+
+from src.database import get_db
+from src.models.models import UserModel
+from src.schemas.schemas import (
+    OrderCreate,
+    OrderResponse,
+    OrderDetailSchema,
+    OrderStatusUpdate
+)
+from src.security import get_current_user, get_current_admin
+from src.services.order_service import OrderService
+
+# Ініціалізація роутера для оформлення та адміністрування замовлень
 router = APIRouter(prefix="/api/v1/orders", tags=["Orders"])
 
-# @router.post("", response_model=OrderResponse, status_code=status.HTTP_201_CREATED)
-# def create_order(order_data: OrderCreate, db: Session = Depends(get_db)):
-#     # 1. Пошук або автоматичне створення користувача за email
-#     user = db.query(UserModel).filter(UserModel.email == order_data.user_email).first()
-#     if not user:
-#         user = UserModel(email=order_data.user_email, password_hash="hashed_demo", full_name="Покупець Сніжинки")
-#         db.add(user)
-#         db.commit()
-#         db.refresh(user)
-
-#     total_amount = 0.0
-#     order_items_to_create = []
-
-#     # 2. Перевірка наявності товарів на складі та обчислення суми
-#     for item in order_data.items:
-#         product = db.query(ProductModel).filter(ProductModel.id == item.product_id).first()
-#         if not product or product.stock_quantity < item.quantity:
-#             raise HTTPException(
-#                 status_code=400, 
-#                 detail=f"Товар '{product.name if product else item.product_id}' відсутній у потрібній кількості"
-#             )
-        
-#         # Зменшення залишку на складі (update_stock)
-#         product.stock_quantity -= item.quantity
-#         item_total = product.price * item.quantity
-#         total_amount += item_total
-
-#         order_items_to_create.append(
-#             OrderItemModel(
-#                 product_id=product.id,
-#                 quantity=item.quantity,
-#                 price_per_unit=product.price,
-#                 selected_size=item.selected_size
-#             )
-#         )
-
-#     # 3. Збереження замовлення у базі даних
-#     new_order = OrderModel(
-#         user_id=user.id,
-#         delivery_address=order_data.delivery_address,
-#         total_amount=total_amount,
-#         status="Обробляється"
-#     )
-#     db.add(new_order)
-#     db.commit()
-#     db.refresh(new_order)
-
-#     for item in order_items_to_create:
-#         item.order_id = new_order.id
-#         db.add(item)
-#     db.commit()
-
-#     return OrderResponse(
-#         order_id=new_order.id,
-#         status=new_order.status,
-#         total_amount=total_amount,
-#         message="Замовлення успішно створене!"
-#     )
-
-
-
-
+# Ендпоїнт оформлення нового замовлення авторизованим покупцем
 @router.post("", response_model=OrderResponse, status_code=status.HTTP_201_CREATED)
-def create_order(order_data: OrderCreate, db: Session = Depends(get_db)):
-    digits = re.sub(r"\D", "", order_data.phone)
-    if len(digits) != 12 or not digits.startswith("380"):
-        raise HTTPException(status_code=400, detail="Некоректний формат номера телефону (+380 XX XXX XX XX)")
+def create_order(
+    order_data: OrderCreate,
+    db: Session = Depends(get_db),
+    current_user: UserModel = Depends(get_current_user)
+):
+    return OrderService.create_order(db, current_user, order_data)
 
-    user = db.query(UserModel).filter(UserModel.email == order_data.user_email).first()
-    if not user:
-        user = UserModel(email=order_data.user_email, password_hash="hashed_demo", full_name="Покупець Сніжинки")
-        db.add(user)
-        db.commit()
-        db.refresh(user)
+# Ендпоїнт перегляду власної історії замовлень поточного покупця
+@router.get("/my", response_model=List[OrderDetailSchema])
+def get_my_orders(
+    db: Session = Depends(get_db),
+    current_user: UserModel = Depends(get_current_user)
+):
+    return OrderService.get_user_orders(db, current_user.id)
 
-    total_amount = 0.0
-    order_items_to_create = []
+# Захищений ендпоїнт отримання всіх замовлень клієнтів (лише для адміністратора)
+@router.get("", response_model=List[OrderDetailSchema])
+def get_all_orders(
+    db: Session = Depends(get_db),
+    admin: UserModel = Depends(get_current_admin)
+):
+    return OrderService.get_all_orders(db)
 
-    for item in order_data.items:
-        product = db.query(ProductModel).filter(ProductModel.id == item.product_id).first()
-        if not product or product.stock_quantity < 1:
-            raise HTTPException(
-                status_code=400, 
-                detail=f"Товар '{product.name if product else item.product_id}' відсутній на складі"
-            )
-        
-        # Списуємо 1 одиницю
-        product.stock_quantity -= 1
-        total_amount += product.price
-
-        order_items_to_create.append(
-            OrderItemModel(
-                product_id=product.id,
-                quantity=1,
-                price_per_unit=product.price,
-                selected_size=item.selected_size,
-                selected_color=item.selected_color
-            )
-        )
-
-    new_order = OrderModel(
-        user_id=user.id,
-        phone=order_data.phone,
-        delivery_address=order_data.delivery_address,
-        total_amount=total_amount,
-        status="Обробляється"
-    )
-    db.add(new_order)
-    db.commit()
-    db.refresh(new_order)
-
-    for item in order_items_to_create:
-        item.order_id = new_order.id
-        db.add(item)
-    db.commit()
-
-    return OrderResponse(
-        order_id=new_order.id,
-        status=new_order.status,
-        total_amount=total_amount,
-        message="Замовлення успішно створено!"
-    )
+# Захищений ендпоїнт зміни статусу виконання замовлення (лише для адміністратора)
+@router.patch("/{order_id}/status", response_model=OrderDetailSchema)
+def update_order_status(
+    order_id: int,
+    status_data: OrderStatusUpdate,
+    db: Session = Depends(get_db),
+    admin: UserModel = Depends(get_current_admin)
+):
+    return OrderService.update_order_status(db, order_id, status_data.status)
